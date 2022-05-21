@@ -14,21 +14,66 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/*
+    Auth Routes
+*/
+
 Route::group(['prefix' => 'auth', 'namespace' => 'Api'], function () {
 
+    // Register Route
     Route::post('register', 'AuthController@register');
+
+    // Login Route
     Route::post('login',    'AuthController@login');
 
-    Route::group(['middleware' => 'auth.jwt'], function () {
-        Route::get('logout',    'AuthController@logout');
-        Route::get('refresh',   'AuthController@refreshToken');
-        Route::get('user',      'AuthController@getUser');
-
-    });
 
     Route::any('{segment}', function () {
         return response()->json([
             'error' => 'Invalid url or Method'
         ], 400);
     })->where('segment', '.*');
+});
+
+
+/*
+    Page Routes
+*/
+
+Route::group(['prefix' => 'page', 'namespace' => 'Api'], function () {
+
+    Route::group(['middleware' => 'auth.jwt'], function () {
+
+        //Page Create Route
+        Route::post('create',    'PageController@createPage');
+
+        //Post Create From Page 
+        Route::post('{pageId}/attach-post',    'PostController@createPostByPage');
+    });
+});
+
+/*
+    Person Routes
+*/
+
+Route::group(['prefix' => 'person', 'namespace' => 'Api'], function () {
+
+    Route::group(['middleware' => 'auth.jwt'], function () {
+        // Post Create by User
+        Route::post('attach-post',    'PostController@createPostByUser');
+    });
+});
+
+
+/*
+    Follow Routes
+*/
+Route::group(['prefix' => 'follow', 'namespace' => 'Api'], function () {
+
+    Route::group(['middleware' => 'auth.jwt'], function () {
+        //  Follow a Person 
+        Route::post('person/{personId}',    'FollowController@followPerson');
+
+        // Follow a page
+        Route::post('page/{pageId}',    'FollowController@followPage');
+    });
 });

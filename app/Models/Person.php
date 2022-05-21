@@ -9,6 +9,9 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+use App\Models\Post;
+use App\Models\Follow;
+
 
 class Person extends Authenticatable implements JWTSubject
 {
@@ -22,7 +25,8 @@ class Person extends Authenticatable implements JWTSubject
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'password',
     ];
@@ -65,4 +69,16 @@ class Person extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+
+
+    // public function followers()
+    // {
+    //         return $this->belongsToMany(Person::class, Follow::class, 'fo_id', 'follow_id');
+    // }
+
+    // public function follows()
+    // {
+    //     return $this->belongsToMany(Person::class, Follow::class, 'follow_id', 'user_id');
+    // }
 }
