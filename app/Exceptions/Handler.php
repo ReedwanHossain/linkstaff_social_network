@@ -1,9 +1,19 @@
 <?php
 
 namespace App\Exceptions;
-
+use Exception;
+use Facade\FlareClient\Http\Exceptions\NotFound;
+use Illuminate\Auth\AuthenticationException;
+use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Tymon\JWTAuth\Exceptions\TokenExpiredException;
+use Tymon\JWTAuth\Exceptions\TokenInvalidException;
+use Illuminate\Support\Facades\Request;
+use Illuminate\Validation\ValidationException;
+use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use App\Facades\ResponseGenerator;
 
 class Handler extends ExceptionHandler
 {
@@ -32,10 +42,16 @@ class Handler extends ExceptionHandler
      *
      * @return void
      */
-    public function register()
+   public function register()
     {
-        $this->reportable(function (Throwable $e) {
+        // reportable
+        $this->renderable(function (Throwable $e) {
             //
+            return response(['error' => $e->getMessage()], $e->getCode() ?: 400);
         });
     }
+
+
+
+
 }

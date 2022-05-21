@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::group(['prefix' => 'auth', 'namespace' => 'Api'], function () {
+
+    Route::post('register', 'AuthController@register');
+    Route::post('login',    'AuthController@login');
+
+    Route::group(['middleware' => 'auth.jwt'], function () {
+        Route::get('logout',    'AuthController@logout');
+        Route::get('refresh',   'AuthController@refreshToken');
+        Route::get('user',      'AuthController@getUser');
+
+    });
+
+    Route::any('{segment}', function () {
+        return response()->json([
+            'error' => 'Invalid url or Method'
+        ], 400);
+    })->where('segment', '.*');
 });
